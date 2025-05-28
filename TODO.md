@@ -1,0 +1,8 @@
+-[ ] piano keys for debugging
+-[ ] midi input
+-[ ] tablet layout
+-[ ] show note sheet
+-[ ] track which one was pressed and which one didnt
+-[ ] different modes (stop when not pressed, play sound if not pressed, just continue)
+-[ ] support any midi file and somehow display it nicely
+-[ ] play back midi files
