@@ -7,28 +7,27 @@ import { Utilities } from "webmidi";
 const midiControls = useTemplateRef("midi");
 
 const container = useTemplateRef("osmdContainer");
-const osmd = ref<OSMD | null>(null);
+let osmd: OSMD | null = null;
 
 const expectedNotes = ref<number[]>([]);
 const playedNotes = ref<number[]>([]);
 
 onMounted(async () => {
-  osmd.value = new OSMD(container.value!, { autoResize: true, backend: "svg", followCursor: false });
+  osmd = new OSMD(container.value!, { autoResize: true, backend: "svg", followCursor: false });
   const file = (await import("@/assets/mozart-das_veilchen.xml")).default;
   console.log("file", file);
-  await osmd.value.load(file, "Das Veilchen");
-  osmd.value.sheet.Instruments[0].Visible = false;
-  await osmd.value.render();
-  osmd.value.cursor.show();
+  await osmd.load(file, "Das Veilchen");
+  osmd.Sheet.Instruments[0].Visible = false;
+  osmd.render();
+  osmd.cursor.show();
   recordNextNotes();
-  window.osmd = osmd.value;
 });
 
 function next() {
-  const oldElements = osmd.value?.cursor.GNotesUnderCursor();
+  const oldElements = osmd?.cursor.GNotesUnderCursor();
   oldElements?.forEach((elem) => color(elem as VexFlowGraphicalNote, "black"));
 
-  osmd.value?.cursor.next();
+  osmd?.cursor.next();
 
   recordNextNotes();
 }
@@ -37,14 +36,14 @@ function recordNextNotes() {
   expectedNotes.value = [];
   playedNotes.value = [];
 
-  const newElements = osmd.value?.cursor.GNotesUnderCursor();
+  const newElements = osmd?.cursor.GNotesUnderCursor();
   newElements?.forEach((elem) => {
     color(elem as VexFlowGraphicalNote, "red");
-    if (elem.sourceNote.isRestFlag) {
+    if (elem.sourceNote.isRest()) {
       return;
     }
     const note = elem.sourceNote.halfTone + 12;
-    console.log("play", note, Utilities.toNoteIdentifier(note));
+    console.log("play", note, Utilities.toNoteIdentifier(note, 0));
     expectedNotes.value.push(note);
   });
 
@@ -69,9 +68,9 @@ function noteOn([identifier, number]: [string, number]) {
 }
 
 function playCurrent() {
-  midiControls.value.getOutput().sendAllSoundOff();
+  midiControls.value?.getOutput()?.sendAllSoundOff();
   expectedNotes.value.forEach((note) => {
-    midiControls.value.getOutput().playNote(note, { duration: 500, attack: 0.6 });
+    midiControls.value?.getOutput()?.playNote(note, { duration: 500, attack: 0.6 });
   });
 }
 
@@ -100,8 +99,8 @@ function color(gNote: VexFlowGraphicalNote, color: string) {
 // TODO use this for a playback button
 function dumpNotes() {
   const allNotes = [];
-  osmd.value!.cursor.reset();
-  const iterator = osmd.value!.cursor.Iterator;
+  osmd!.cursor.reset();
+  const iterator = osmd!.cursor.Iterator;
 
   while (!iterator.EndReached) {
     const voices = iterator.CurrentVoiceEntries;
