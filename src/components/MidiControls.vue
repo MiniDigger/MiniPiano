@@ -15,8 +15,12 @@ const emit = defineEmits<{
 
 watch(input, async (newValue) => {
   console.log("new input device", newValue?.name);
-  if (!newValue?.hasListener("noteon", onNote)) {
-    newValue?.addListener("noteon", onNote);
+  try {
+    if (!newValue?.hasListener("noteon", onNote)) {
+      newValue?.addListener("noteon", onNote);
+    }
+  } catch (e) {
+    location.reload();
   }
 });
 watch(output, async (newValue) => {
