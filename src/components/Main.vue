@@ -44,6 +44,7 @@ watch(() => options.value?.selectedScore, async (newValue) => {
 watch(() => options.value?.jianpuMode, (newValue) => {
   if (!osmd) return;
   // TODO requires paid version
+  // @ts-expect-error dum
   osmd.EngravingRules.JianpuAlwaysUsed = newValue;
 
   reset();
@@ -149,6 +150,7 @@ function dumpNotes() {
     const voices = iterator.CurrentVoiceEntries;
     for (let i = 0; i < voices.length; i++) {
       const v = voices[i];
+      if (!v) continue;
       const notes = v.Notes;
       for (let j = 0; j < notes.length; j++) {
         const note = notes[j];
@@ -192,6 +194,7 @@ function click(e: MouseEvent) {
         const objectsInRegion = graphicalMeasure.PositionAndShape.getObjectsInRegion(region, true, GraphicalNote.name);
         for (const note of objectsInRegion) {
           if (note instanceof GraphicalNote) {
+            // @ts-expect-error dum
             console.log(note, note.getNoteheadSVGs());
             // TODO for E5 G5 this colors both notes...
             note.setColor("orange", {});
