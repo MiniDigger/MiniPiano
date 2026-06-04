@@ -5,8 +5,7 @@ import {
   GraphicalNote,
   OpenSheetMusicDisplay as OSMD,
   OutlineAndFillStyleEnum,
-  PointF2D,
-  VexFlowMeasure
+  PointF2D
 } from "opensheetmusicdisplay";
 import { computed, onMounted, ref, useTemplateRef, watch } from "vue";
 import MidiControls from "@/components/MidiControls.vue";
@@ -116,7 +115,7 @@ function noteOn([identifier, number]: [string, number]) {
     if (options.value?.highlightWrongNote) {
       // TODO somehow display the missed note?
       const notesUnderCursor = osmd.cursor.GNotesUnderCursor();
-      for (let firstNote of notesUnderCursor) {
+      for (const firstNote of notesUnderCursor) {
         if (firstNote.sourceNote.isRest()) {
           continue;
         }
@@ -177,8 +176,8 @@ function click(e: MouseEvent) {
 
   // drawCross(osmdPos);
 
-  for (let measureEntry of osmd.GraphicSheet.MeasureList) {
-    for (let graphicalMeasure of measureEntry) {
+  for (const measureEntry of osmd.GraphicSheet.MeasureList) {
+    for (const graphicalMeasure of measureEntry) {
       if (graphicalMeasure.PositionAndShape.pointLiesInsideBorders(osmdPos)) {
         // osmd.Drawer.drawBoundingBox(graphicalMeasure.PositionAndShape, "red", true);
 
@@ -191,7 +190,7 @@ function click(e: MouseEvent) {
         region.calculateAbsolutePosition();
 
         const objectsInRegion = graphicalMeasure.PositionAndShape.getObjectsInRegion(region, true, GraphicalNote.name);
-        for (let note of objectsInRegion) {
+        for (const note of objectsInRegion) {
           if (note instanceof GraphicalNote) {
             console.log(note, note.getNoteheadSVGs());
             // TODO for E5 G5 this colors both notes...

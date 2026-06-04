@@ -19,7 +19,7 @@ watch(input, async (newValue) => {
     if (!newValue?.hasListener("noteon", onNote)) {
       newValue?.addListener("noteon", onNote);
     }
-  } catch (e) {
+  } catch {
     location.reload();
   }
 });
@@ -69,13 +69,13 @@ defineExpose({
     <label>
       Input Device
       <select v-model="inputDeviceName">
-        <option v-for="device in inputDevices" :value="device">{{ device }}</option>
+        <option v-for="device in inputDevices" :key="device" :value="device">{{ device }}</option>
       </select>
     </label>
     <label>
       Output Device
       <select v-model="outputDeviceName">
-        <option v-for="device in outputDevices" :value="device">{{ device }}</option>
+        <option v-for="device in outputDevices" :key="device" :value="device">{{ device }}</option>
       </select>
     </label>
     <button @click="disconnect">Disconnect</button>
